@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <!-- <link rel="stylesheet" href="styles.css"> -->
+  <style type="text/css">
+    body, html {
+  margin: 0;
+  padding: 0;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-areas:
+    "navbar navbar"
+    "header header"
+    "sidebar main"
+    "footer footer";
+  grid-template-columns: 15% 1fr;
+  grid-template-rows: auto auto 1fr auto;
+  height: 100vh;
+}
+
+.navbar {
+  grid-area: navbar;
+  display: flex;
+  flex-direction: row;
+  background-color: lightblue;
+  padding: 10px;
+  justify-content: space-between;
+
+}
+
+.header {
+  grid-area: header;
+  background-color: lightgreen;
+}
+
+.sidebar {
+  grid-area: sidebar;
+  background-color: lightyellow;
+}
+
+.main-content {
+  grid-area: main;
+  background-color: lightpink;
+}
+
+.footer {
+  grid-area: footer;
+  background-color: lightcoral;
+}
+  </style>
+ 
+ <title>Grid Layout Example</title>
+</head>
+<body>
+  <div class="grid-container">
+    <header class="header">Header</header>
+    <nav class="navbar">
+        <span>
+            Logo
+        </span>
+        <span>
+            NavBar
+        </span>
+    </nav>
+    <aside class="sidebar">Sidebar</aside>
+    <main class="main-content">Main Content</main>
+    <footer class="footer">Footer</footer>
+  </div>
+</body>
+</html>
