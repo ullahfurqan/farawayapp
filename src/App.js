@@ -22,14 +22,14 @@ function App() {
     //in the callback function
     //The above is the callback structure in which items is the current object containing all the items upon which the filteraton is required
     //after the => the procedure block comes, here it is only one line so it does not comes in curly braces and it has implecit return due to one line
-    //filter or map methods always have the callback with the specific item/object in iteration.
+    //filter or map methods always have the callback with the specific item/object in iteration. Filter gives a new array and filters out the one if the condition gets true
   }
 
   function handleStrikeItem(id){
     // eslint-disable-next-line no-unused-expressions, array-callback-return    
     setItems((items)=>items.map((item)=> 
-      ((item.id === id && (!item.packed)) ? {...item, packed: true} : 
-      (item.id === id && (item.packed===true) ? {...item, packed: false} : item))))
+      (item.id === id ? { ...item, packed: !item.packed } : item )));
+    //((item.id === id && (!item.packed)) ? {...item, packed: true} : (item.id === id && (item.packed===true) ? {...item, packed: false} : item))))
     //booksAfterDelete.map((book)=> book.id == 1 ? {...book, pages: 1} : book  //use spread operator to spread items in book and add new properties if requires   
   }
 
@@ -113,7 +113,8 @@ function PackingList({items, onDeleteItem, onStrikeItem}) {
 function Item({item, onDeleteItem, onStrikeItem}) {
   return(
     <li>
-      <span style={item.packed ? {textDecoration: "line-through", color: "red"} : {}} onClick={()=>onStrikeItem(item.id)}>
+      <input type='checkbox' value={item.packed} onChange={() => onStrikeItem(item.id)}/>
+      <span style={item.packed ? {textDecoration: "line-through", color: "red"} : {}}>
       {item.quantity} {item.description} 
       </span>
       <button onClick={()=>onDeleteItem(item.id)}>❎</button>
@@ -129,7 +130,6 @@ function Stats({itmlength}) {
       </em>
     </footer>
   )
-
 }
 
 export default App;
