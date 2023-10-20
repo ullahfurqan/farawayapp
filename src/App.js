@@ -9,10 +9,10 @@ import { useState } from "react";
 // ];
 
 function App() {
-  const [items, setItems] = useState([]);
+  const [items, setItems] = useState([]); //items is an array of item and a single item contains an object of item
 
   function handleAddItems (item) {
-    setItems((items)=> [...items, item]); //spread the previous items and add a new item in the array (as we cannot mutate original array using push method)    
+    setItems((items)=> [...items, item]); //spread all the previous items and add a new item in the array (as we cannot mutate original array using push method)    
     //console.log(items);
   }
 
@@ -38,7 +38,7 @@ function App() {
       <Logo />
       <Form onAddItems={handleAddItems} />      
       <PackingList items={items} onDeleteItem={handleDeleteItem} onStrikeItem={handleStrikeItem}/>
-      <Stats itmlength={items.length}/>
+      <Stats items={items}/>
     </div>
   );
 }
@@ -101,11 +101,38 @@ function Form({onAddItems}) {
 }
 
 function PackingList({items, onDeleteItem, onStrikeItem}) {
+  const [sortBy, setSortBy] = useState("input");
+
+  let sortedItems;
+
+  if (sortBy === "input") sortedItems = items;
+
+  if(sortBy === "description") {
+    sortedItems = items
+      .slice() //making a shallow copy / new array before apply sort as sort will mutate the original one, so its always good to copy the original array and apply sorting on the copy version and not on the original one.
+      .sort((a,b)=>a.description.localeCompare(b.description)); //Sorting technique for Strings 
+  }
+
+  if(sortBy === "packed") {
+    sortedItems = items
+      .slice() //making a shallow copy so original one does not mutate due to sort operations
+      .sort((a,b)=> Number(a.packed) - Number(b.packed)); //sorting technique for Boolean Variable
+  }
+
   return (
   <div className="list">
+    
     <ul>
-      {items.map(item => <Item item={item} key={item.id} onDeleteItem={onDeleteItem} onStrikeItem={onStrikeItem}/>)}
-    </ul>
+      {sortedItems.map(item => <Item item={item} key={item.id} onDeleteItem={onDeleteItem} onStrikeItem={onStrikeItem}/>)}
+    </ul>   
+
+    <div className="actions">
+      <select value={sortBy} onChange={(e)=>setSortBy(e.target.value)}>
+        <option value="input">Sort by input order</option>
+        <option value="description">Sort by description</option>
+        <option value="packed">Sort by packed status</option>
+      </select>
+    </div>
   </div>
   )
 }
@@ -122,14 +149,28 @@ function Item({item, onDeleteItem, onStrikeItem}) {
   )  
 }
 
-function Stats({itmlength}) {
+function Stats({items}) {
+  //the below is the derived state variable
+  const numItems = items.length;
+  const packedItems = items.filter(item=>item.packed).length;
+  const percentage = Math.round(packedItems/numItems*100);
+
+  if (!items.length)
+    return (
+      <footer className="stats">
+          <em>Start adding some items in your packaging list... 🚀🚀🚀 </em>
+      </footer>
+    )
+  
   return (
     <footer className="stats">
       <em>
-        You have {itmlength} items in your list, and you already packed X (X%)
+      { percentage===100 ? 'You are ready to go... ✈️' : 
+          `You have ${numItems} items in your list, and you already packed ${packedItems} (${percentage}%)`
+      }
       </em>
     </footer>
-  )
+  ) 
 }
 
 export default App;
